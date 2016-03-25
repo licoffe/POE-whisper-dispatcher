@@ -19,6 +19,8 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ),
     this->interval = new QTimer( this );
     this->poe_path = "";
 
+	ui->log_textedit->setStyleSheet( QString( "QScrollBar::right-arrow:horizontal, QScrollBar::left-arrow:horizontal{border: none; background: none; color: white;} QTextEdit { background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(50, 50, 50, 255)); color: rgb( 0, 200, 200 ); padding: 10px; font-size: 0.8em; }" ));
+
     // Read configuration file
     std::string path = QDir::homePath().toStdString() + 
                        "/.config/poe-whisper-dispatcher/config.cfg";
@@ -228,9 +230,6 @@ void MainWindow::stop() {
 * @param Line number from which to start parsing
 * \todo Due to special characters in login names, some lines from Client.txt are
 * not parsed. Exemple: @tourbillôll
-* \todo Some lines are parsed but not correctly escaped when sent through curl.
-* Exemple: @Dunhille: Hi, I would like to buy your Blasphemy listed for 1 chaos
-* in Standard (stash tab "~price 1 chaos")
 */
 void MainWindow::parse_file( const std::string file_path, 
                              const int start_line ) {
@@ -261,21 +260,30 @@ void MainWindow::parse_file( const std::string file_path,
                 try {
                     if ( std::regex_search( line, match, whisper_reg ) &&
                     match.size() > 2 ) {
+                        // Escape " in match.str(2)
+						std::string rep = match.str(2);
+                        std::replace( rep.begin(),
+									  rep.end(), '"', ' ' );
 						std::ostringstream str;
 						str << "<span style='color: rgb( 240, 164, 24 );"
 							<< " font-weight: bold'>"
-							<< match.str(1) << "</span>: " << match.str(2);
+							<< match.str(1) << "</span>: " << rep;
 						ui->log_textedit->append( QString::fromStdString( str.str()));
                         std::ostringstream cmd;
                         cmd << "curl -sS --header 'Access-Token: '"
                             << ui->pbAccessToken_textfield->text().toStdString()
                             << " --header 'Content-Type: application/json' "
-                            << "--data-binary '{\"body\":\"" << match.str(2) 
+                            << "--data-binary '{\"body\":\"" << rep 
                             << "\"," << "\"title\":\"PoE whisper from " 
                             << match.str(1) << "\",\"type\":\"note\"}' "
                             << "--request POST https://api.pushbullet.com/v2/pushes&";
                         std::string cmd_str = cmd.str();
+                        qDebug() << QString::fromStdString( cmd_str );
                         std::system( cmd_str.c_str());
+						// Autoscroll log window
+						QTextCursor c = ui->log_textedit->textCursor();
+						c.movePosition( QTextCursor::End );
+						ui->log_textedit->setTextCursor( c );
                     }
                 } catch ( std::regex_error& e ) {
                     // Syntax error in the regular expression

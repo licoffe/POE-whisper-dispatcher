@@ -13,9 +13,10 @@ TEMPLATE = app
 
 CONFIG += c++11 static
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+SOURCES += main.cpp mainwindow.cpp
 
 HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
+
+QMAKE_CXXFLAGS += -O3

@@ -19,6 +19,9 @@
   <property name="windowTitle">
    <string>PoE Whisper Dispatcher</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="2" column="2">

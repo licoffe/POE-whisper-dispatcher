@@ -6,14 +6,14 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QDebug>
+#include <QTimer>
+#include <QDir>
 #include <regex>
 #include <fstream>
 #include <thread>
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
-#include <QTimer>
-#include <QDir>
 
 namespace Ui {
     class MainWindow;
