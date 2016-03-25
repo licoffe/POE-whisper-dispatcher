@@ -40,19 +40,21 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ),
                 if ( std::regex_search( line, match, entry_reg ) &&
                 match.size() > 2 ) {
                     if ( match.str( 1 ).compare( "token" ) == 0 ) {
-						std::ostringstream msg;
-						msg << "Found token: <span style='color: "
-							<< "rgb(197, 24, 240)'>" << match.str( 2 )
-							<< "</span>";
-						ui->log_textedit->append( QString::fromStdString( msg.str()));
+                        std::ostringstream msg;
+                        msg << "Found token: <span style='color: "
+                            << "rgb(197, 24, 240)'>" << match.str( 2 )
+                            << "</span>";
+                        ui->log_textedit->append( 
+                            QString::fromStdString( msg.str()));
                         this->ui->pbAccessToken_textfield->setText(
                             QString::fromStdString( match.str( 2 )));
                     } else if ( match.str( 1 ).compare( "poe_path" ) == 0 ) {
-						std::ostringstream msg;
-						msg << "Found PoE path: <span style="
-							<< "'color: rgb(197, 24, 240)'>" << match.str( 2 )
-							<< "</span>";
-						ui->log_textedit->append( QString::fromStdString( msg.str()));
+                        std::ostringstream msg;
+                        msg << "Found PoE path: <span style="
+                            << "'color: rgb(197, 24, 240)'>" << match.str( 2 )
+                            << "</span>";
+                        ui->log_textedit->append( 
+                            QString::fromStdString( msg.str()));
                         std::string poe_path_str = 
                             match.str( 2 ) + "Contents/Resources/drive_c/" +
                             "Program Files/Grinding Gear Games/" +
@@ -65,7 +67,8 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ),
                             "<span style='color: red'>Found unknown entry (" +
                             match.str( 1 ) + 
                             ") while parsing <b>config.cfg</b></span>";
-                        ui->log_textedit->append( QString::fromStdString( msg ));
+                        ui->log_textedit->append( 
+                            QString::fromStdString( msg ));
                     }
                 }
             } catch ( std::regex_error& e ) {
@@ -261,14 +264,15 @@ void MainWindow::parse_file( const std::string file_path,
                     if ( std::regex_search( line, match, whisper_reg ) &&
                     match.size() > 2 ) {
                         // Escape " in match.str(2)
-						std::string rep = match.str(2);
+                        std::string rep = match.str(2);
                         std::replace( rep.begin(),
-									  rep.end(), '"', ' ' );
-						std::ostringstream str;
-						str << "<span style='color: rgb( 240, 164, 24 );"
-							<< " font-weight: bold'>"
-							<< match.str(1) << "</span>: " << rep;
-						ui->log_textedit->append( QString::fromStdString( str.str()));
+                        rep.end(), '"', ' ' );
+                        std::ostringstream str;
+                        str << "<span style = 'color: rgb( 240, 164, 24 );"
+                            << " font-weight: bold'>"
+                            << match.str(1) << "</span>: " << rep;
+                        ui->log_textedit->append( 
+                            QString::fromStdString( str.str()));
                         std::ostringstream cmd;
                         cmd << "curl -sS --header 'Access-Token: '"
                             << ui->pbAccessToken_textfield->text().toStdString()
@@ -280,10 +284,10 @@ void MainWindow::parse_file( const std::string file_path,
                         std::string cmd_str = cmd.str();
                         qDebug() << QString::fromStdString( cmd_str );
                         std::system( cmd_str.c_str());
-						// Autoscroll log window
-						QTextCursor c = ui->log_textedit->textCursor();
-						c.movePosition( QTextCursor::End );
-						ui->log_textedit->setTextCursor( c );
+                        // Autoscroll log window
+                        QTextCursor c = ui->log_textedit->textCursor();
+                        c.movePosition( QTextCursor::End );
+                        ui->log_textedit->setTextCursor( c );
                     }
                 } catch ( std::regex_error& e ) {
                     // Syntax error in the regular expression
