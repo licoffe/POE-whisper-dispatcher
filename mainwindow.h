@@ -23,7 +23,7 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit                 MainWindow(QWidget *parent = 0);
+    explicit                 MainWindow( QWidget *parent = 0 );
     ~MainWindow();
 
 private:
@@ -44,7 +44,6 @@ public slots:
     void                     start();
     void                     stop();
     QString                  browse_to_client_file();
-    void                     quit();
     void                     parse();
 };
 

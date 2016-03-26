@@ -7,6 +7,7 @@
 * Initialize the main window interface, check if config.cfg file exists and
 * loads it. Updates Token field and Client.txt path accordingly.
 * @param parent
+* \todo hide middle of the token, in log output
 */
 MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ),
                                             ui( new Ui::MainWindow ) {
@@ -35,14 +36,15 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ),
         std::smatch match;
         std::string line;
         while ( std::getline( file, line )) {
-            qDebug() << QString::fromStdString( line );
             try {
                 if ( std::regex_search( line, match, entry_reg ) &&
                 match.size() > 2 ) {
                     if ( match.str( 1 ).compare( "token" ) == 0 ) {
+                        std::string token = match.str(2);
+                        token.replace( 3, 28, "xxxxxxxxxxxxxxxxxxxxxxxxxxxx" );
                         std::ostringstream msg;
                         msg << "Found token: <span style='color: "
-                            << "rgb(197, 24, 240)'>" << match.str( 2 )
+                            << "rgb(197, 24, 240)'>" << token
                             << "</span>";
                         ui->log_textedit->append( 
                             QString::fromStdString( msg.str()));
@@ -301,16 +303,6 @@ void MainWindow::parse_file( const std::string file_path,
     } else {
         qDebug() << "Empty file path";
     }
-}
-
-/**
-* @brief MainWindow::quit
-*
-* Calls the stop method on quit in order to stop running threads.
-*/
-void MainWindow::quit() {
-    qDebug() << "Exiting";
-    this->stop();
 }
 
 /**
